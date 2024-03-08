@@ -1,6 +1,8 @@
 import fs from 'fs'
 import productModel from '../models/productModel.js';
 import slugify from 'slugify';
+
+
 export const createProductController = async(req , res) => {
     try {
         const {name , slug , description , price  , category , quantity , shipping} = req.fields;
@@ -30,7 +32,7 @@ export const createProductController = async(req , res) => {
 
         await products.save();
         res.status(201).send({
-            succcess : true,
+            success : true,
             message : "Product Created successfully",
             products
         })
@@ -74,6 +76,7 @@ export const getSingleProductController = async(req , res)=> {
         const product  = await productModel.findOne({slug : req.params.slug})
         .select("-photo")
         .populate('category')
+        console.log("product is ", product);
         res.status(200).send({
             succcess : true,
             message : "Single Product fetched",
@@ -100,7 +103,7 @@ export const productPhotoController = async(req , res) => {
     } catch (error) {
         res.status(400).send({
             succcess : false,
-            message : "Error while fetching single product",
+            message : "Error while fetching photo ",
             error
         })
     }

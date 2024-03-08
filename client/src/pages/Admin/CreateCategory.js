@@ -9,18 +9,18 @@ import CategoryForm from '../../components/Form/CategoryForm'
 
 const CreateCategory = () => {
   const [categories, setCategories] = useState([]);
-  const [name , setName] = useState("");
+  const [name, setName] = useState("");
 
 
 
   //handle form
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/category/create-category` , {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/category/create-category`, {
         name
       })
-      if(data?.success){
+      if (data?.success) {
         toast.success(`${name} is created`);
         getAllCategory();
       }
@@ -32,14 +32,14 @@ const CreateCategory = () => {
 
 
   //handle delete 
-  const handleDelete = async(id)=>{
+  const handleDelete = async (id) => {
     try {
-      const {data} = await axios.delete(`${process.env.REACT_APP_API}/api/v1/category/delete-category/${id}`);
-      if(data.success){
+      const { data } = await axios.delete(`${process.env.REACT_APP_API}/api/v1/category/delete-category/${id}`);
+      if (data.success) {
         toast.success(`${data.category.name} is deleted`);
         getAllCategory();
       }
-      else{
+      else {
         toast.error(data.message);
       }
     } catch (error) {
@@ -71,36 +71,37 @@ const CreateCategory = () => {
       <div className="container-fluid m-3 p-3">
         <div className="row">
           <div className="col-md-3"><AdminMenu /></div>
-          <div className="col-md-9"><h1>Manage Category</h1>
-          <div className="p-3 w-50">
-            <CategoryForm
-              handleSubmit={handleSubmit}
-              value={name}
-              setValue={setName}
-            />
-          </div>
-          <div className='w-75'>
-          <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories && categories.map((c) => (
-              <tr key={c._id}>
-                <td>{c.name}</td>
-                <td>
-                  <button className="btn btn-primary ms-2">Edit</button>
-                  <button className="btn btn-danger ms-2" onClick={()=>handleDelete(c._id)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        
-          </div>
+          <div className="col-md-9">
+            <h1>Manage Category</h1>
+            <div className="p-3 w-50">
+              <CategoryForm
+                handleSubmit={handleSubmit}
+                value={name}
+                setValue={setName}
+              />
+            </div>
+            <div className='w-75'>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categories && categories.map((c) => (
+                    <tr key={c._id}>
+                      <td>{c.name}</td>
+                      <td>
+                        <button className="btn btn-primary ms-2">Edit</button>
+                        <button className="btn btn-danger ms-2" onClick={() => handleDelete(c._id)}>Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+            </div>
           </div>
         </div>
       </div>
