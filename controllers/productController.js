@@ -1,7 +1,7 @@
 import fs from 'fs'
 import productModel from '../models/productModel.js';
 import slugify from 'slugify';
-
+import exp from 'constants';
 
 export const createProductController = async(req , res) => {
     try {
@@ -44,7 +44,7 @@ export const createProductController = async(req , res) => {
             error
         })
     }
-}
+};
 
 
 export const getProductController = async(req , res) => {
@@ -68,7 +68,7 @@ export const getProductController = async(req , res) => {
             error
         })
     }
-}
+};
 
 
 export const getSingleProductController = async(req , res)=> {
@@ -90,7 +90,7 @@ export const getSingleProductController = async(req , res)=> {
             error
         })
     }
-}
+};
 
 export const productPhotoController = async(req , res) => {
     try {
@@ -107,7 +107,7 @@ export const productPhotoController = async(req , res) => {
             error
         })
     }
-} 
+};
 
 
 export const deleteProductController = async(req , res) => {
@@ -124,7 +124,7 @@ export const deleteProductController = async(req , res) => {
             error
         })
     }
-}
+};
 
 
 export const updateProductController = async (req, res) => {
@@ -173,5 +173,112 @@ export const updateProductController = async (req, res) => {
         error,
         message: "Error in Updte product",
       });
+    }
+  };
+
+  export const productFilterController = async(req , res)=> {
+    try {
+        console.log("Hii ")
+        const {checked , radio} = req.body;
+        let args={}
+        
+        if(checked.length>0){
+            args.category=checked;
+        }
+        if(radio.length){
+            args.price={
+                $gte:radio[0],
+                $lte:radio[1]
+            }
+        }
+        const products = await productModel.find(args);
+        res.status(200).send({
+            success : true,
+            message : "filtered products found",
+            products
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success:false,
+            message:"Error whilte filtering products",
+            error
+        })
+    }
+  };
+
+  export const productCountController = async(req , res)=> {
+    try {
+        const total= await productModel.find({}).estimatedDocumentCount();
+        console.log(total);
+        res.status(200).send({
+            success:true,
+            message:"You got total count product api",
+            total
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success:false,
+            message:"Error in product count",
+            error
+        })
+    }
+  };
+
+  //product list based on page
+
+  export const productListController = async(req , res)=>{
+    try {
+        const perPage = 6;
+        const page = req.params.page?req.params.page : 1;
+        const products = await productModel
+        .find({})
+        .select("-photo")
+        .skip((page-1) * perPage)
+        .limit(perPage)
+        .sort({createdAt:-1});
+        res.status(200).send({
+            success:true,
+            message:"You got product per page",
+            products
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success:false,
+            message:"Error in getting per page",
+            error
+        })
+    }
+  };
+
+  //search product controller
+
+  export const productSearchController = async(req , res) => {
+    try {
+        const {keyword} = req.params;
+        const results = await productModel.find({
+            $or : [
+                {
+                    name : {$regex :keyword , $options:"i"}
+                },
+                {
+                    description: {$regex :keyword , $options:"i"}
+                }
+            ]
+        }).select("-photo");
+        res.status(200).send({
+            success:true,
+            message : "you got the products based on search ",
+            results
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success:false,
+            message:"Error in search product api"
+        })
     }
   };
