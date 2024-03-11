@@ -3,6 +3,9 @@ import productModel from '../models/productModel.js';
 import slugify from 'slugify';
 import exp from 'constants';
 
+import categoryModel from '../models/categoryModel.js';
+
+
 export const createProductController = async(req , res) => {
     try {
         const {name , slug , description , price  , category , quantity , shipping} = req.fields;
@@ -282,3 +285,53 @@ export const updateProductController = async (req, res) => {
         })
     }
   };
+
+
+  export const relatedProductController = async(req , res)=> {
+    try {
+        const {pid , cid} = req.params;
+        const products = await productModel.find({
+            category:cid,
+            _id:{$ne:pid},
+        })
+        .select("-photo")
+        .limit(3)
+        .populate("category")
+        res.status(200).send({
+            success:true,
+            message:"you got the similar products",
+            products
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({
+            success:false,
+            message:"Error whilte getting similar product",
+            error
+        })
+    }
+  }
+
+  export const productCategoryController = async(req , res)=>{
+
+    try {
+        const category = await categoryModel.find({slug:req.params.slug})
+        const products = await productModel.find(({category})).populate('category');
+        console.log("Your category is : " , category)
+        console.log("Your products are : " , products);
+        res.status(200).send({
+            success:true,
+            message : "you got the products based on category",
+            category,
+            products
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({
+            success:false,
+            message:"Error while getting product based on category",
+            error
+        })
+    }
+    
+  }
