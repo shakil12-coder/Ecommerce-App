@@ -4,29 +4,46 @@ import { useAuth } from '../context/auth'
 import { useCart } from '../context/cart'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 const CartPage = () => {
     const [auth, setAuth] = useAuth();
     const [cart, setCart] = useCart();
-    const navigate= useNavigate();
+    const navigate = useNavigate();
 
     //delte item from cart
-    const removeCartItem = (pid)=>{
+    const removeCartItem = (pid) => {
         let myCart = [...cart]
-        let index = myCart.findIndex(item=>item._id===pid);
-        myCart.splice(index , 1);
+        let index = myCart.findIndex(item => item._id === pid);
+        myCart.splice(index, 1);
         setCart(myCart);
-        localStorage.setItem('cart' , JSON.stringify(myCart))
+        localStorage.setItem('cart', JSON.stringify(myCart))
     }
 
-    const totalPrice = ()=> {
-        let total=0;
-        cart.map(item=>(
-            total+=item.price
+    const totalPrice = () => {
+        let total = 0;
+        cart.map(item => (
+            total += item.price
         ))
-        return total.toLocaleString("en-US" , {
-            style:"currency",
-            currency:'USD'
+        return total.toLocaleString("en-US", {
+            style: "currency",
+            currency: 'USD'
         });
+    }
+
+    const handlePayment = async() => {
+        try {
+            const {data} = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/payment` , {
+                cart
+            })
+            console.log("data is ", data);
+            localStorage.removeItem('cart');
+            setCart([]);
+            navigate('/dashboard/user/orders');
+            toast.success("Payment completed successfully");
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     return (
@@ -34,7 +51,7 @@ const CartPage = () => {
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
-                   
+
                         <h4 className="text-center">
                             {cart?.length ?
                                 `You have ${cart.length} items in your cart ${auth?.token ? "" : "please login to checkout"}` :
@@ -44,69 +61,72 @@ const CartPage = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-8"> 
-                    {
-                        cart?.map(p=>(
-                            <div className="row m-2 card flex-row">
-                                <div className="col-md-4">
-                                <img
-                                    className="card-img-top"
-                                    src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`} alt={p.name}
-                                    height="100"
-                                    width="100"
-                                />
+                    <div className="col-md-8">
+                        {
+                            cart?.map(p => (
+                                <div className="row m-2 card flex-row">
+                                    <div className="col-md-4">
+                                        <img
+                                            className="card-img-top"
+                                            src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`} alt={p.name}
+                                            height="100"
+                                            width="100"
+                                        />
+                                    </div>
+                                    <div className="col-md-8">
+                                        <p>{p.name}</p>
+                                        <p>{p.description}</p>
+                                        <p>Price : $ {p.price}</p>
+                                        <button className="btn btn-danger" onClick={() => removeCartItem(p._id)}>Remove</button>
+                                    </div>
                                 </div>
-                                <div className="col-md-8">
-                                <p>{p.name}</p>
-                                <p>{p.description}</p>
-                                <p>Price : $ {p.price}</p>
-                                <button className="btn btn-danger" onClick={()=>removeCartItem(p._id)}>Remove</button>
-                                </div>
-                            </div>
-                        ))
-                    }
+                            ))
+                        }
                     </div>
                     <div className="col-md-4 text-center">
                         <h4>Cart Summary</h4>
                         <p>Total | Checkout | Payment</p>
-                        <hr/>
+                        <hr />
                         <h4>Total : {totalPrice()}</h4>
                         {auth?.user?.address ? (
                             <>
-                              <div className="mb-3">
-                                <h4>Current Address</h4>
-                                <h5>{auth?.user?.address}</h5>
-                                <button
-                                  className="btn btn-outline-warning"
-                                  onClick={() => navigate("/dashboard/user/profile")}
-                                >
-                                  Update Address
-                                </button>
-                              </div>
+                                <div className="mb-3">
+                                    <h4>Current Address</h4>
+                                    <h5>{auth?.user?.address}</h5>
+                                    <button
+                                        className="btn btn-outline-warning"
+                                        onClick={() => navigate("/dashboard/user/profile")}
+                                    >
+                                        Update Address
+                                    </button>
+                                </div>
                             </>
-                          ) : (
+                        ) : (
                             <div className="mb-3">
-                              {auth?.token ? (
-                                <button
-                                  className="btn btn-outline-warning"
-                                  onClick={() => navigate("/dashboard/user/profile")}
-                                >
-                                  Update Address
-                                </button>
-                              ) : (
-                  <button
-                    className="btn btn-outline-warning"
-                    onClick={() =>
-                      navigate("/login", {
-                        state: "/cart",
-                      })
-                    }
-                  >
-                    Plase Login to checkout
-                  </button>
-                )}
-                </div>
-                )}
+                                {auth?.token ? (
+                                    <button
+                                        className="btn btn-outline-warning"
+                                        onClick={() => navigate("/dashboard/user/profile")}
+                                    >
+                                        Update Address
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="btn btn-outline-warning"
+                                        onClick={() =>
+                                            navigate("/login", {
+                                                state: "/cart",
+                                            })
+                                        }
+                                    >
+                                        Plase Login to checkout
+                                    </button>
+                                )}
+
+                            </div>
+
+                        )}
+                        <button className="btn btn-primary" onClick={() => handlePayment()} disabled={!auth?.user?.address}>Make payment</button>
                     </div>
                 </div>
             </div>
