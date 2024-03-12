@@ -1,11 +1,12 @@
 import fs from 'fs'
 import productModel from '../models/productModel.js';
 import slugify from 'slugify';
-import exp from 'constants';
-
+import stripe from 'stripe';
 import categoryModel from '../models/categoryModel.js';
 import orderModel from '../models/orderModel.js';
-
+import dotenv from 'dotenv'
+dotenv.config();
+const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createProductController = async (req, res) => {
     try {
@@ -345,17 +346,38 @@ export const paymentController = async (req, res) => {
         cart.map((p) => {
             total += p.price
         })
-        const order = new orderModel({
+        const orders = new orderModel({
             products: cart,
             payment: total,
             buyer: req.user._id,
         })
-        await order.save();
+        await orders.save();
+        const session = await stripeInstance.checkout.sessions.create({
+            payment_method_types:["card"],
+            line_items : cart.map((p)=>{
+                return {
+                    price_data : {
+                        currency : "usd",
+                        product_data:{
+                            name:p.name
+                        },
+                        unit_amount :(p.price)*100
+                    },
+                    quantity : p.quantity
+                }
+            }),
+            mode:"payment",
+            success_url:'http://localhost:3000/dashboard/user/orders',
+            cancel_url:'http://youtube.com'
+        })
         res.status(200).send({
             success: true,
-            message:"products added to ordered model",
-            order
-        })
+            message: "Checkout session created successfully",
+            sessionId: session.id,
+            orders,
+            url:session.url
+        });
+
     } catch (error) {
         console.log(error);
     }

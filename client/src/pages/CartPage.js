@@ -38,8 +38,8 @@ const CartPage = () => {
             console.log("data is ", data);
             localStorage.removeItem('cart');
             setCart([]);
-            navigate('/dashboard/user/orders');
             toast.success("Payment completed successfully");
+            window.location=data.url;
         } catch (error) {
             console.log(error)
         }
