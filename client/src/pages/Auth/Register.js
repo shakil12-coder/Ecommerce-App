@@ -24,7 +24,6 @@ const Register = () => {
                 name, email, password, address, phone , answer
             });
     
-            console.log(res.data.message);
             if (res.data.success) {
                 toast.success(res.data.message);
                 navigate("/login");

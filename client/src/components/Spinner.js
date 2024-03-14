@@ -24,7 +24,7 @@ const Spinner = ({path = "login"}) => {
     <div className="d-flex flex-column justify-content-center align-items-center" style={{height :"100vh"}}>
         <h1> Redirecting to you in {count} seconds</h1>
         <div className="spinner-border" role="status">
-        <span className="sr-only">Loading...</span>
+      {/*  <span className="sr-only">Loading...</span> */}
         </div>
     </div>
     </>

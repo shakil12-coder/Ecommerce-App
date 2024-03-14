@@ -175,7 +175,6 @@ export const testController = async (req, res) => {
     success: true,
     message: "protected route",
   });
-  console.log("protected");
 };
 
 

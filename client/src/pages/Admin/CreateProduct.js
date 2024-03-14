@@ -24,7 +24,6 @@ const CreateProduct = () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-categories`)
 
-      console.log("entered");
       if (res.data.success) {
         setCategories(res.data.categories);
       }
@@ -59,7 +58,6 @@ const CreateProduct = () => {
       );
       if(data.success){
         toast.success(`${name} is created`);
-        console.log("product of smart watch creatd");
         navigate("/dashboard/admin/products");
       }
     } catch (error) {

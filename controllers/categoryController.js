@@ -37,7 +37,6 @@ export const updateCategoryController = async(req , res) => {
         
         const {name} = req.body;
         const {id} = req.params
-        // console.log(name, " " , id);
         const category = await categoryModel.findByIdAndUpdate( 
             id , 
             {name , slug : slugify(name)},

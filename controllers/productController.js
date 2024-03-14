@@ -11,7 +11,6 @@ const stripeInstance = stripe(process.env.STRIPE_SECRET_KEY);
 export const createProductController = async (req, res) => {
     try {
         const { name, slug, description, price, category, quantity, shipping } = req.fields;
-        console.log(req.fields);
         const { photo } = req.files;
         switch (true) {
             case !name:
@@ -81,7 +80,6 @@ export const getSingleProductController = async (req, res) => {
         const product = await productModel.findOne({ slug: req.params.slug })
             .select("-photo")
             .populate('category')
-        console.log("product is ", product);
         res.status(200).send({
             succcess: true,
             message: "Single Product fetched",
@@ -134,11 +132,10 @@ export const deleteProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
     try {
-        console.log("filed is ", req.fields);
         const { name, description, price, category, quantity, shipping } =
             req.fields;
         const { photo } = req.files;
-        //alidation
+        //validation
         switch (true) {
             case !name:
                 return res.status(500).send({ error: "Name is Required" });
@@ -319,8 +316,6 @@ export const productCategoryController = async (req, res) => {
     try {
         const category = await categoryModel.find({ slug: req.params.slug })
         const products = await productModel.find(({ category })).populate('category');
-        console.log("Your category is : ", category)
-        console.log("Your products are : ", products);
         res.status(200).send({
             success: true,
             message: "you got the products based on category",

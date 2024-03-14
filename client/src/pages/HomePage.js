@@ -8,6 +8,7 @@ import { Prices } from '../components/Prices';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/cart';
 import { toast } from 'react-toastify';
+import "../style/HomePage.css";
 
 
 const HomePage = () => {
@@ -47,7 +48,6 @@ const HomePage = () => {
       const  {data}  = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
       setLoading(false)
       setProducts(data.products);
-      console.log("this is you current data", data);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -91,7 +91,6 @@ const HomePage = () => {
 
   //filter by category
   const handleFilter = (value, id) => {
-    console.log("value is : ", value, " id is : ", id)
     let all = [...checked];
     if (value) {
       all.push(id);
@@ -110,7 +109,6 @@ const HomePage = () => {
     if(checked.length || radio.length) filterProduct();
   } ,[checked , radio])
 
-  console.log(products)
 
 
   const filterProduct = async () => {
@@ -131,15 +129,18 @@ const HomePage = () => {
   return (
     <Layout title={'Best offers'}>
 
-    
+    <img
+        src="/images/banner.png"
+        className="banner-img"
+        alt="bannerimage"
+        width={"100%"}
+      />
 
-      <div className="row mt-3">
-      {JSON.stringify(radio  , null , 4)}
-      
-        <div className="col-md-2">
+      <div className="container-fluid row mt-3 home-page">      
+        <div className="col-md-2 filters">
 
         {/*Filter By Category */} 
-          <h6 className="text-center">Filter By Category</h6>
+          <h4 className="text-center">Filter By Category</h4>
           
           <div className="d-flex flex-column">
             {
@@ -191,10 +192,10 @@ const HomePage = () => {
                   <h5 className="card-title">{p.name}</h5>
                   <p className="card-text">{p.description.substring(0, 30)}...</p>
                   <p className="card-text"> ${p.price}</p>
-                  <button className="btn btn-primary ms-2" 
+                  <button className="btn btn-primary mb-2" 
                   onClick={() => navigate(`/product/${p.slug}`)}>More Details</button>
                 <button 
-                  className="btn btn-primary ms-2" 
+                  className="btn btn-primary mb-2" 
                   onClick={()=>{
                     setCart([...cart , p])
                     localStorage.setItem('cart' , JSON.stringify([...cart , p] ))

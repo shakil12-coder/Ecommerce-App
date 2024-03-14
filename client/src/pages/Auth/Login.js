@@ -22,10 +22,8 @@ const Login = () => {
                  email, password
             });
     
-            console.log(res.data.message);
             if (res.data.success) {
                 toast.success(res.data.message);
-                console.log("logged in succesfullly")
                 setAuth({
                   ...auth , 
                   user : res.data.user,
@@ -76,10 +74,16 @@ const Login = () => {
         </div>
 
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary" onClick={()=>{navigate('/forgot-password')}}>
-            Forgot Password
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn forgot-btn"
+          onClick={() => {
+            navigate("/forgot-password");
+          }}
+        >
+          Forgot Password
+        </button>
+      </div>
 
         <button type="submit" className="btn btn-primary">
           Submit

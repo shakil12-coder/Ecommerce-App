@@ -13,7 +13,6 @@ const Orders = () => {
     try {
       const {data} = await axios.get(`${process.env.REACT_APP_API}/api/v1/auth/orders`);
       setOrders(data);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

@@ -12,7 +12,6 @@ const Products = () => {
     const getAllProducts = async () => {
         try {
             const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/get-product`);
-            console.log("All products data are fetched", data);
             setProducts(data.products)
         } catch (error) {
             console.log(error);

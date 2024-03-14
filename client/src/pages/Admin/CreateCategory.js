@@ -52,7 +52,6 @@ const CreateCategory = () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-categories`)
 
-      console.log("entered");
       if (res.data.success) {
         setCategories(res.data.categories);
       }
