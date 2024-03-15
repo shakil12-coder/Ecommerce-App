@@ -370,7 +370,7 @@ export const paymentController = async (req, res) => {
             message: "Checkout session created successfully",
             sessionId: session.id,
             orders,
-            url:session.url
+            url:session.url 
         });
 
     } catch (error) {

@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerController , loginController , forgotPasswordController , testController, updateProfileController, getOrderController, getAllOrdersController, orderStatusController } from '../controllers/authController.js';
+import { registerController , loginController , forgotPasswordController , testController, updateProfileController, getOrderController, getAllOrdersController, orderStatusController, getAllUsersControllers } from '../controllers/authController.js';
 import { requireSignIn , isAdmin} from '../middlewares/authMiddleware.js';
 
 
@@ -46,5 +46,8 @@ router.get('/all-orders' , requireSignIn , getAllOrdersController);
 
 //order status update
 router.put('/order-status/:orderId' , requireSignIn , isAdmin , orderStatusController);
+
+//get all users
+router.get('/all-users' , requireSignIn , isAdmin ,  getAllUsersControllers);
 
 export default router;

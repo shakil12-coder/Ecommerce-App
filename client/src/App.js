@@ -35,12 +35,14 @@ function App() {
         <Route path="/cart" element={<CartPage/>}/>
         <Route path="/category/:slug" element={<CategoryProduct/>}/>
         <Route path="/dashboard" element={<PrivateRoute/>}>
-          <Route path="user" element={<Dashboard />} />
+      {/*    <Route path="user" element={<Dashboard />} />    askat ke wajah se abhi nhi kiye  lekin baad me yaad se kar lena*/}  
+          <Route path="user" element={<Orders />} />
           <Route path="user/orders" element={<Orders />} />
           <Route path="user/profile" element={<Profile />} />
         </Route>
         <Route path="/dashboard" element={<AdminRoute/>}>
-          <Route path="admin" element={<AdminDashboard />} />
+        <Route path="admin" element={<AdminDashboard />} />    
+   {/*       <Route path="admin" element={<Users/> } />    askat ke wajah se abhi nhi kiye  lekin baad me yaad se kar lena */}
           <Route path="admin/create-category" element={<CreateCategory />} />
           <Route path="admin/create-product" element={<CreateProduct />} />
           <Route path="admin/products" element={<Products />} />

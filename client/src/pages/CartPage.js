@@ -38,10 +38,17 @@ const CartPage = () => {
             const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/product/payment`, {
                 cart
             })
-            localStorage.removeItem('cart');
-            setCart([]);
-            toast.success("Payment completed successfully");
-            window.location = data.url;
+            console.log("this is after payment", data);
+            if (data?.success) {
+                localStorage.removeItem('cart');
+                setCart([]);
+                toast.success("Payment completed successfully");
+                window.location = data.url;
+            }
+            else {
+                toast.error("Payment failed")
+            }
+
         } catch (error) {
             console.log(error)
         }
