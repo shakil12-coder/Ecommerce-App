@@ -362,7 +362,7 @@ export const paymentController = async (req, res) => {
                 }
             }),
             mode:"payment",
-            success_url:'http://localhost:3000/dashboard/user/orders',
+            success_url:'https://ecommerce-app-eta-two.vercel.app/dashboard/user/orders',
             cancel_url:'http://youtube.com'
         })
         res.status(200).send({
